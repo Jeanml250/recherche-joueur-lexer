@@ -35,6 +35,7 @@
   --accent: #6fb0f2; --accent-pale: #1d3249; --alerte: #f08a62; color-scheme: dark;
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
 body {
   margin: 0; background: var(--fond); color: var(--encre);
@@ -235,7 +236,8 @@ function proximite(cherche, trouve) {
 const LIB_PROX = ['identique', 'mots inversés', 'orthographe proche', 'nom abrégé ou complété'];
 
 // ---------- Liste déroulante à cases ----------
-function multi(conteneur, { vide, unite, recherche = false, onChange = () => {} }) {
+function multi(conteneur, { vide, unite, pluriel = unite + 's', feminin = false, recherche = false, onChange = () => {} }) {
+  const e = feminin ? 'e' : '';
   const el = $(conteneur);
   el.innerHTML = `<button type="button" aria-expanded="false"><span></span></button>
     <div class="liste" hidden>${recherche ? '<input type="text" placeholder="Filtrer…" aria-label="Filtrer la liste">' : ''}
@@ -247,8 +249,8 @@ function multi(conteneur, { vide, unite, recherche = false, onChange = () => {} 
   const visibles = () => options.filter(o => !filtre || !filtre.value || cle(o.texte + ' ' + (o.detail || '')).includes(cle(filtre.value)));
   function resume() {
     const n = coches.size;
-    bouton.querySelector('span').textContent = !options.length ? vide : n === 0 ? `Aucun ${unite} choisi`
-      : n === options.length && n > 1 ? `Tous (${n})` : n === 1 ? options.find(o => coches.has(o.valeur)).texte : `${n} ${unite}s choisis`;
+    bouton.querySelector('span').textContent = !options.length ? vide : n === 0 ? `Aucun${e} ${unite} choisi${e}`
+      : n === options.length && n > 1 ? `Tou${feminin ? 'te' : ''}s (${n})` : n === 1 ? options.find(o => coches.has(o.valeur)).texte : `${n} ${pluriel} choisi${e}s`;
     bouton.disabled = !options.length;
     const v = visibles();
     tous.checked = v.length > 0 && v.every(o => coches.has(o.valeur));
@@ -283,10 +285,10 @@ const cleSalon = s => `${s.pays}|${s.nom}|${s.ville}`;
 const salonsParCle = new Map(CAT.salons.map(s => [cleSalon(s), s]));
 const evenements = CAT.evenements.map(([i, dossier, slug, nom, debut, fin, type]) => ({ salon: cleSalon(CAT.salons[i]), dossier, slug, nom, debut, fin, type, saison: saisonDe(debut || fin) }));
 
-const mSaisons = multi('m-saisons', { vide: 'Aucune saison', unite: 'saison', onChange: () => memo.ecrire('saisons', mSaisons.valeurs()) });
-const mPays = multi('m-pays', { vide: 'Aucun pays', unite: 'pays', onChange: majSalons });
+const mSaisons = multi('m-saisons', { vide: 'Aucune saison', unite: 'saison', feminin: true, onChange: () => memo.ecrire('saisons', mSaisons.valeurs()) });
+const mPays = multi('m-pays', { vide: 'Aucun pays', unite: 'pays', pluriel: 'pays', onChange: majSalons });
 const mSalons = multi('m-salons', { vide: 'Aucun salon', unite: 'salon', recherche: true, onChange: () => memo.ecrire('salons', mSalons.valeurs()) });
-const mVariantes = multi('m-variantes', { vide: 'Lancez une recherche', unite: 'variante', recherche: true, onChange: dessineFiche });
+const mVariantes = multi('m-variantes', { vide: 'Lancez une recherche', unite: 'variante', feminin: true, recherche: true, onChange: dessineFiche });
 
 // Quelques événements portent des dates fantaisistes (1899, 1967…) : on ne garde que les saisons plausibles.
 const saisons = [...new Set(evenements.map(e => e.saison).filter(a => a >= 2005))].sort((a, b) => b - a);

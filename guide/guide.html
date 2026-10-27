@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Guide de l'utilisateur — Recherche d'un quilleur</title>
+<style>
+  @page { size: Letter; margin: 18mm 18mm 20mm; }
+  * { box-sizing: border-box; }
+  body { font: 10.5pt/1.5 -apple-system, "Helvetica Neue", Arial, sans-serif; color: #1d1d1f; margin: 0; }
+  h1, h2, h3 { color: #0b3d73; line-height: 1.2; }
+  h2 { font-size: 17pt; margin: 0 0 8pt; padding-bottom: 4pt; border-bottom: 2px solid #0b5cad; break-after: avoid; }
+  h3 { font-size: 12pt; margin: 14pt 0 4pt; break-after: avoid; }
+  p { margin: 0 0 7pt; }
+  ul, ol { margin: 0 0 8pt; padding-left: 18pt; } li { margin-bottom: 3pt; }
+  section { margin-top: 20pt; } section.saut { break-before: page; margin-top: 0; }
+  code { font-family: "SF Mono", Menlo, monospace; font-size: 9.5pt; background: #eef1f5; padding: 1pt 4pt; border-radius: 3pt; }
+  .adresse { display: block; font-size: 13pt; font-weight: 700; color: #0b5cad; background: #e3eefa; padding: 9pt 12pt; border-radius: 5pt; margin: 6pt 0 10pt; }
+  .encadre { background: #e3eefa; border-left: 4px solid #0b5cad; padding: 8pt 11pt; border-radius: 0 5pt 5pt 0; margin: 8pt 0 10pt; break-inside: avoid; }
+  .attention { background: #fdf1e6; border-left-color: #c26a12; }
+  figure { margin: 6pt 0 12pt; break-inside: avoid; }
+  figure img { max-width: 100%; max-height: 105mm; border: 1px solid #d5d8de; border-radius: 4pt; display: block; }
+  figcaption { font-size: 9pt; color: #5b5f66; margin-top: 3pt; }
+  .duo { display: flex; gap: 14pt; align-items: flex-start; break-inside: avoid; }
+  .duo figure { flex: 1; margin: 0; }
+  .duo img { max-height: 120mm; }
+  table { border-collapse: collapse; width: 100%; font-size: 9.5pt; margin: 4pt 0 10pt; }
+  th, td { border-bottom: 1px solid #dfe2e7; padding: 4pt 6pt; text-align: left; vertical-align: top; }
+  th { background: #f1f4f8; color: #0b3d73; }
+  tr { break-inside: avoid; }
+  .couverture { height: 230mm; display: flex; flex-direction: column; justify-content: center; }
+  .couverture .sur { color: #0b5cad; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; font-size: 10pt; }
+  .couverture h1 { font-size: 32pt; margin: 6pt 0 10pt; }
+  .couverture .sous { font-size: 14pt; color: #4a4f57; margin-bottom: 30pt; }
+  .couverture .infos { font-size: 10pt; color: #5b5f66; border-top: 1px solid #d5d8de; padding-top: 10pt; }
+  .etapes { counter-reset: e; list-style: none; padding-left: 0; }
+  .etapes > li { counter-increment: e; position: relative; padding-left: 26pt; margin-bottom: 7pt; }
+  .etapes > li::before { content: counter(e); position: absolute; left: 0; top: 0; width: 18pt; height: 18pt; border-radius: 50%; background: #0b5cad; color: #fff; font-weight: 700; font-size: 9.5pt; text-align: center; line-height: 18pt; }
+  .b { display: inline-block; border: 1px solid #0b5cad; color: #0b5cad; border-radius: 3pt; padding: 0 5pt; font-size: 9.5pt; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="couverture">
+  <div class="sur">Résultats EZ Lexer · Bowl4U</div>
+  <h1>Recherche d'un quilleur</h1>
+  <div class="sous">Guide de l'utilisateur</div>
+  <p style="max-width:140mm">Cet outil retrouve un joueur de quilles dans toutes les ligues et tous les tournois publiés
+  sur EZ Lexer, dans les salons et les saisons de votre choix. Il produit une fiche imprimable :
+  chaque ligue où le joueur a joué, son nombre de parties, sa moyenne, puis un résumé pour chaque
+  façon dont son nom est écrit.</p>
+  <span class="adresse">https://jeanml250.github.io/recherche-joueur-lexer/</span>
+  <div class="infos">Version du 27 octobre 2026 · Fonctionne sur iPhone, iPad, Android, Mac et Windows</div>
+</div>
+
+<section class="saut">
+  <h2>Table des matières</h2>
+  <ol>
+    <li>Ouvrir l'outil</li>
+    <li>Remplir le formulaire</li>
+    <li>Choisir les variantes du nom</li>
+    <li>Lire la fiche</li>
+    <li>Imprimer ou enregistrer en PDF</li>
+    <li>Utiliser l'outil sur un téléphone</li>
+    <li>Mettre à jour la liste des salons et des ligues</li>
+    <li>Questions fréquentes</li>
+    <li>Contenu du dossier</li>
+  </ol>
+
+  <div class="encadre"><strong>En bref.</strong> Ouvrez l'adresse, cochez la saison et le salon, tapez le nom du joueur,
+  appuyez sur <span class="b">Rechercher</span>, cochez les variantes du nom qui désignent bien ce joueur, puis
+  <span class="b">Imprimer la fiche</span>.</div>
+
+  <h3>D'où viennent les données</h3>
+  <p>Les salons qui utilisent le logiciel EZ Lexer publient leurs résultats sur Internet. La page
+  <code>lexerbowling.com/gotobowl4u</code> renvoie au site Bowl4U, qui en dresse la liste : 345 salons et plus de
+  22 000 ligues et tournois dans le monde.</p>
+  <ul>
+    <li><strong>La liste des salons et des ligues</strong> (le « catalogue ») est relevée sur Bowl4U et gardée avec l'outil.
+      On la met à jour au début de chaque saison (section 7).</li>
+    <li><strong>Les parties et les moyennes</strong> sont lues en direct sur les pages de résultats Lexer à chaque recherche.
+      Elles sont donc toujours à jour, y compris pour la saison en cours.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>1. Ouvrir l'outil</h2>
+  <h3>Sur n'importe quel appareil, n'importe où</h3>
+  <p>Ouvrez cette adresse dans Safari, Chrome ou Edge :</p>
+  <span class="adresse">https://jeanml250.github.io/recherche-joueur-lexer/</span>
+  <p>Rien à installer. L'ordinateur de la maison n'a pas besoin d'être allumé. Il faut seulement Internet.</p>
+
+  <h3>Sur l'ordinateur, sans passer par l'adresse</h3>
+  <p>Dans le dossier <code>Recherche Joueur Lexer</code>, double-cliquez sur <code>Lancer.command</code> (Mac) ou
+  <code>Lancer.bat</code> (Windows). La page s'ouvre dans le navigateur. Une fenêtre noire reste ouverte : c'est le petit
+  serveur de l'outil. Elle affiche aussi une adresse du genre <code>http://192.168.1.25:8790</code>, utilisable par les
+  téléphones et tablettes branchés sur le même Wi-Fi. Fermez la fenêtre noire quand vous avez terminé.</p>
+  <div class="encadre attention">Cette méthode demande Node.js (<code>nodejs.org</code>). L'adresse en ligne, elle, ne demande rien.</div>
+</section>
+
+<section>
+  <h2>2. Remplir le formulaire</h2>
+  <figure><img src="formulaire.png" alt="Formulaire de recherche"><figcaption>Le formulaire : saison, pays, salon, types d'événements, nom du joueur.</figcaption></figure>
+
+  <ol class="etapes">
+    <li><strong>Saison.</strong> Cochez une ou plusieurs saisons. Une saison va d'août à juillet : « 2025-2026 » couvre
+      les ligues de l'automne 2025 au printemps 2026 et les tournois joués dans cette période.</li>
+    <li><strong>Pays.</strong> Le Canada est coché d'office. Il ne sert qu'à raccourcir la liste des salons.</li>
+    <li><strong>Salon de quilles.</strong> Cochez un ou plusieurs salons. Tapez quelques lettres dans <em>Filtrer…</em>
+      pour trouver un salon rapidement. Sous chaque nom, la ville aide à distinguer les salons semblables.</li>
+    <li><strong>Inclure.</strong> Cochez <em>Ligues</em>, <em>Tournois</em> ou les deux.</li>
+    <li><strong>Nom du joueur.</strong> Tapez le prénom et le nom. Les majuscules et les accents n'ont pas d'importance.</li>
+    <li>Appuyez sur <span class="b">Rechercher</span> (ou sur la touche Entrée).</li>
+  </ol>
+
+  <div class="duo">
+    <figure><img src="salons.png" alt="Liste des salons filtrée"><figcaption>Chaque liste a une case « Tout cocher ». Le filtre ne montre que les salons correspondants ; « Tout cocher » coche alors seulement ceux-là.</figcaption></figure>
+    <div style="flex:1">
+      <h3 style="margin-top:0">Pendant la recherche</h3>
+      <p>Une barre de progression indique combien de ligues et de tournois ont été lus. Comptez environ
+      une seconde par tranche de 25 ligues. Un salon sur une saison se fait en quelques secondes. Tous les
+      salons du Canada sur plusieurs saisons peuvent prendre plusieurs minutes.</p>
+      <p>Le bouton <span class="b">Arrêter</span> interrompt la lecture. La fiche montre alors ce qui a déjà été trouvé.</p>
+      <p>Vos derniers choix (saisons, pays, salons, nom) sont retenus sur l'appareil pour la prochaine fois.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>3. Choisir les variantes du nom</h2>
+  <p>Un même joueur n'est pas toujours inscrit de la même façon d'une ligue à l'autre. Après la recherche,
+  la liste <strong>Variantes du nom trouvées</strong> montre chaque orthographe rencontrée, avec la raison du
+  rapprochement et le nombre de ligues où elle apparaît.</p>
+  <figure><img src="variantes.png" alt="Liste des variantes du nom"><figcaption>Recherche de « Richard Lapointe » : le nom identique et trois variantes avec une précision entre parenthèses.</figcaption></figure>
+
+  <table>
+    <tr><th style="width:32%">Type de variante</th><th>Exemple pour « Jean Tremblay »</th><th style="width:16%">Cochée d'office</th></tr>
+    <tr><td>identique</td><td>jean tremblay, Jean Trémblay (majuscules et accents ignorés)</td><td>oui</td></tr>
+    <tr><td>mots inversés</td><td>Tremblay Jean</td><td>oui</td></tr>
+    <tr><td>orthographe proche</td><td>Jean Tremblai, Jeanne Tremblay (une ou deux lettres de différence)</td><td>non</td></tr>
+    <tr><td>nom abrégé ou complété</td><td>J. Tremblay, Jean-Guy Tremblay, Jean Tremblay (Bot)</td><td>non</td></tr>
+  </table>
+
+  <div class="encadre attention"><strong>À vérifier vous-même.</strong> Une variante proche peut être une autre personne :
+  « Jeanne Tremblay » n'est sans doute pas « Jean Tremblay ». C'est pourquoi seules les variantes identiques
+  sont cochées d'office. Cochez les autres seulement si vous savez qu'il s'agit du même joueur.</div>
+  <p>La fiche se met à jour dès que vous cochez ou décochez une variante. Inutile de relancer la recherche.</p>
+  <p>Si le joueur n'apparaît pas du tout, essayez seulement son nom de famille, ou une autre orthographe.</p>
+</section>
+
+<section class="saut">
+  <h2>4. Lire la fiche</h2>
+  <figure><img src="fiche.png" alt="Fiche du joueur"><figcaption>La fiche : le nom cherché en titre, puis une ligne par ligue ou tournoi (extrait).</figcaption></figure>
+  <table>
+    <tr><th style="width:24%">Colonne</th><th>Contenu</th></tr>
+    <tr><td>Date</td><td>Date du début de la ligue ou du tournoi. Les lignes sont classées par date.</td></tr>
+    <tr><td>Salon de quilles</td><td>Le salon où le joueur a été trouvé.</td></tr>
+    <tr><td>Ligue / tournoi</td><td>Le nom tel que publié sur Lexer. Les tournois portent la mention « (tournoi) ».</td></tr>
+    <tr><td>Nom inscrit</td><td>Affichée seulement quand plusieurs variantes sont cochées : l'orthographe utilisée dans cette ligue.</td></tr>
+    <tr><td>Parties</td><td>Nombre de parties jouées dans cette ligue ou ce tournoi.</td></tr>
+    <tr><td>Moyenne</td><td>Moyenne du joueur dans cette ligue ou ce tournoi, telle que publiée par Lexer.</td></tr>
+  </table>
+  <p>Les ligues où le joueur est inscrit mais n'a encore joué aucune partie ne sont pas listées.</p>
+</section>
+
+<section>
+  <h3>Le résumé</h3>
+  <figure><img src="resume.png" alt="Résumé de la fiche"><figcaption>Au bas de la fiche, une ligne par variante cochée, puis le total.</figcaption></figure>
+  <table>
+    <tr><th style="width:28%">Colonne</th><th>Contenu</th></tr>
+    <tr><td>Nom tel qu'inscrit</td><td>Chaque variante cochée, séparément.</td></tr>
+    <tr><td>Salons</td><td>Nombre de salons différents où ce nom apparaît.</td></tr>
+    <tr><td>Ligues</td><td>Nombre de ligues et tournois différents.</td></tr>
+    <tr><td>Parties</td><td>Total des parties.</td></tr>
+    <tr><td>Moyenne cumulative</td><td>Total des quilles abattues divisé par le total des parties.</td></tr>
+    <tr><td>Toutes les variantes</td><td>Ligne de total, présente quand plus d'une variante est cochée.</td></tr>
+  </table>
+  <div class="encadre"><strong>Exemple de moyenne cumulative.</strong> 124 parties à 195,86 et 24 parties à 192,04 donnent
+  (124 × 195,86 + 24 × 192,04) ÷ 148 = <strong>195,24</strong>. Une ligue de 124 parties pèse donc plus lourd
+  qu'un tournoi de 4 parties. Ce n'est pas la simple moyenne des moyennes.</div>
+</section>
+
+<section>
+  <h2>5. Imprimer ou enregistrer en PDF</h2>
+  <p>Appuyez sur <span class="b">Imprimer la fiche</span>. Seule la fiche est imprimée : le formulaire disparaît
+  et les couleurs passent en noir sur blanc, même si l'écran est en mode sombre.</p>
+  <ul>
+    <li><strong>Mac :</strong> dans la fenêtre d'impression, menu <em>PDF</em> en bas à gauche → <em>Enregistrer au format PDF</em>.</li>
+    <li><strong>Windows :</strong> choisissez l'imprimante <em>Microsoft Print to PDF</em> ou <em>Enregistrer au format PDF</em>.</li>
+    <li><strong>iPhone / iPad :</strong> dans l'aperçu d'impression, touchez l'icône de partage en haut → <em>Enregistrer dans Fichiers</em>,
+      ou choisissez une imprimante AirPrint.</li>
+    <li><strong>Android :</strong> choisissez <em>Enregistrer au format PDF</em> en haut de l'écran d'impression.</li>
+  </ul>
+  <p>La fiche porte la date d'impression, et la liste des saisons couvertes sous le titre.</p>
+</section>
+
+<section>
+  <h2>6. Utiliser l'outil sur un téléphone</h2>
+  <div class="duo">
+    <figure><img src="telephone-form.png" alt="Formulaire sur téléphone" style="max-height:110mm"><figcaption>Le formulaire sur iPhone.</figcaption></figure>
+    <figure><img src="telephone-fiche.png" alt="Fiche sur téléphone" style="max-height:110mm"><figcaption>Sur un écran étroit, le salon s'affiche sous le nom de la ligue.</figcaption></figure>
+  </div>
+  <h3>En faire une icône sur l'écran d'accueil</h3>
+  <ul>
+    <li><strong>iPhone / iPad (Safari) :</strong> ouvrez l'adresse, touchez <em>Partager</em> (carré avec une flèche) → <em>Sur l'écran d'accueil</em> → <em>Ajouter</em>.</li>
+    <li><strong>Android (Chrome) :</strong> ouvrez l'adresse, touchez le menu <em>⋮</em> → <em>Ajouter à l'écran d'accueil</em>.</li>
+  </ul>
+  <p>Sur téléphone, les listes s'ouvrent directement dans la page. Touchez de nouveau le bouton de la liste pour la refermer.
+  Si le tableau est plus large que l'écran, faites-le glisser de côté avec le doigt.</p>
+</section>
+
+<section>
+  <h2>7. Mettre à jour la liste des salons et des ligues</h2>
+  <p>Une nouvelle ligue ou un nouveau tournoi n'apparaît dans l'outil qu'après la mise à jour du catalogue.
+  Faites-la au début de chaque saison, puis de temps en temps pour ajouter les nouveaux tournois.
+  Le message sous le titre du formulaire indique la date du catalogue en usage.</p>
+  <ol class="etapes">
+    <li>Sur le Mac, ouvrez le dossier <code>Recherche Joueur Lexer</code>.</li>
+    <li>Double-cliquez sur <code>Mettre à jour le catalogue.command</code>.</li>
+    <li>Attendez environ 12 minutes. Le Terminal affiche les pages lues sur Bowl4U, puis
+      « catalogue.js : 345 salons, 22 271 événements » (les nombres augmentent avec le temps).</li>
+    <li>L'outil republie ensuite automatiquement la page en ligne. Elle est à jour sur tous les appareils
+      1 à 2 minutes plus tard.</li>
+  </ol>
+  <div class="encadre attention">Il faut Google Chrome (ou Microsoft Edge) sur l'ordinateur : Bowl4U ne s'affiche que dans un vrai
+  navigateur, que l'outil pilote en arrière-plan sans ouvrir de fenêtre. Sur Windows, le fichier s'appelle
+  <code>Mettre a jour le catalogue.bat</code> ; il ne republie la page en ligne que si Git y est installé et relié au compte GitHub.</div>
+  <p>Les moyennes, elles, n'ont pas besoin de mise à jour : elles sont lues en direct à chaque recherche.</p>
+</section>
+
+<section>
+  <h2>8. Questions fréquentes</h2>
+  <table>
+    <tr><th style="width:36%">Situation</th><th>Que faire</th></tr>
+    <tr><td>« Aucun joueur de ce nom. »</td><td>Vérifiez la saison et le salon choisis. Essayez seulement le nom de famille, ou une autre orthographe.</td></tr>
+    <tr><td>Une ligue récente manque.</td><td>Mettez à jour le catalogue (section 7).</td></tr>
+    <tr><td>« … ligues lues, 3 illisibles »</td><td>Ces pages n'étaient pas disponibles sur Lexer au moment de la recherche (ligue retirée ou serveur occupé). Relancez la recherche plus tard.</td></tr>
+    <tr><td>Deux joueurs différents portent le même nom.</td><td>L'outil ne peut pas les distinguer. Limitez la recherche aux salons ou aux saisons du bon joueur, ou ignorez les lignes en trop.</td></tr>
+    <tr><td>La recherche est longue.</td><td>Cochez moins de salons ou de saisons. Une recherche refaite sans recharger la page relit seulement les nouvelles ligues.</td></tr>
+    <tr><td>Une date semble fausse.</td><td>La date vient de Bowl4U, telle que le salon l'a saisie dans Lexer.</td></tr>
+    <tr><td>Le bouton « Imprimer la fiche » est grisé.</td><td>Aucune variante n'est cochée, ou aucune recherche n'a encore été faite.</td></tr>
+  </table>
+</section>
+
+<section>
+  <h2>9. Contenu du dossier</h2>
+  <table>
+    <tr><th style="width:38%">Fichier</th><th>Rôle</th></tr>
+    <tr><td><code>index.html</code></td><td>La page de recherche (formulaire et fiche).</td></tr>
+    <tr><td><code>catalogue.js</code></td><td>La liste des salons et des ligues, produite par la mise à jour.</td></tr>
+    <tr><td><code>catalogue.mjs</code></td><td>Le programme de mise à jour du catalogue.</td></tr>
+    <tr><td><code>serveur.mjs</code></td><td>Le petit serveur utilisé par <code>Lancer.command</code> / <code>Lancer.bat</code>.</td></tr>
+    <tr><td><code>Lancer.command</code>, <code>Lancer.bat</code></td><td>Ouvrent l'outil sur l'ordinateur (Mac, Windows).</td></tr>
+    <tr><td><code>Mettre à jour le catalogue…</code></td><td>Mettent à jour la liste des salons et des ligues.</td></tr>
+    <tr><td><code>LISEZMOI.md</code></td><td>Aide-mémoire court.</td></tr>
+    <tr><td><code>guide/</code></td><td>Ce guide et ses captures. Pour le refaire : <code>node guide/generer-guide.mjs</code>.</td></tr>
+  </table>
+  <p>Le code est aussi sauvegardé sur GitHub : <code>github.com/Jeanml250/recherche-joueur-lexer</code>.</p>
+</section>
+
+</body>
+</html>

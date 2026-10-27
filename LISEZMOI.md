@@ -4,7 +4,15 @@ Cherche un joueur dans toutes les ligues et tous les tournois publiés sur Bowl4
 (la page `lexerbowling.com/gotobowl4u` renvoie vers ce site) et produit une fiche imprimable :
 date, salon, ligue, parties, moyenne, puis un résumé par variante du nom.
 
-## Utilisation
+## Adresse en ligne
+
+**https://jeanml250.github.io/recherche-joueur-lexer/**
+
+À ouvrir sur n'importe quel appareil (iPhone, iPad, Android, Mac, Windows), même hors de la
+maison, sans rien installer. Sur iPhone/iPad : bouton Partager → « Sur l'écran d'accueil »
+pour en faire une icône comme une application. Sur Android : menu ⋮ → « Ajouter à l'écran d'accueil ».
+
+## Utilisation sur cet ordinateur, sans Internet pour la page
 
 **Mac** : double-cliquer sur `Lancer.command`. **Windows** : double-cliquer sur `Lancer.bat`.
 (Node.js doit être installé : https://nodejs.org)
@@ -33,6 +41,7 @@ La liste des salons et des ligues (le catalogue) vient de Bowl4U, qui ne s'affic
 un vrai navigateur. Pour l'actualiser (nouvelle saison, nouveau tournoi) :
 double-cliquer sur `Mettre à jour le catalogue.command` (Mac) ou
 `Mettre a jour le catalogue.bat` (Windows). Il faut Google Chrome ou Microsoft Edge.
+La version Mac republie ensuite la page en ligne (il faut 1 à 2 minutes pour qu'elle change).
 Compter une quinzaine de minutes pour le monde entier ; pour un seul pays, en Terminal :
 
 ```bash

@@ -1,0 +1,17 @@
+{
+  "name": "recherche-joueur-lexer",
+  "version": "1.0.0",
+  "description": "Recherche d un quilleur dans les résultats EZ Lexer (Bowl4U)",
+  "main": "serveur.mjs",
+  "scripts": {
+    "start": "node serveur.mjs",
+    "catalogue": "node catalogue.mjs"
+  },
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "puppeteer-core": "^24.43.1"
+  },
+  "private": true
+}

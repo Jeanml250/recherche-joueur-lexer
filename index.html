@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fiche Joueur Lexer</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap">
+<script src="catalogue.js"></script>
+<style>
+/* Mise en page : une colonne — formulaire en haut, fiche imprimable dessous. */
+:root {
+  --fond: #f3f5f8;
+  --papier: #ffffff;
+  --encre: #18202b;
+  --doux: #5c6878;
+  --trait: #d6dce5;
+  --accent: #0b5cad;      /* bleu « allée » */
+  --accent-pale: #e3eefa;
+  --alerte: #a23b16;
+  --titre: "Barlow Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --texte: "Source Sans 3", "Segoe UI", Helvetica, Arial, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fond: #11161d; --papier: #1a212b; --encre: #e7ecf2; --doux: #9aa6b5; --trait: #2e3846;
+    --accent: #6fb0f2; --accent-pale: #1d3249; --alerte: #f08a62; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --fond: #11161d; --papier: #1a212b; --encre: #e7ecf2; --doux: #9aa6b5; --trait: #2e3846;
+  --accent: #6fb0f2; --accent-pale: #1d3249; --alerte: #f08a62; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body {
+  margin: 0; background: var(--fond); color: var(--encre);
+  font: 16px/1.45 var(--texte);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 40px;
+}
+.page { max-width: 980px; margin: 0 auto; display: grid; gap: 20px; }
+.page > *, .fiche > *, .panneau > *, .resume > * { min-width: 0; }
+h1, h2 { font-family: var(--titre); font-weight: 700; letter-spacing: .01em; text-wrap: balance; margin: 0; }
+h1 { font-size: 2rem; line-height: 1.1; }
+.sous { color: var(--doux); margin: 4px 0 0; }
+
+.panneau { background: var(--papier); border: 1px solid var(--trait); border-radius: 10px; padding: 18px; display: grid; gap: 16px; }
+.grille { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 14px; }
+.champ { display: grid; gap: 6px; min-width: 0; align-content: start; }
+.etiquette { font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--doux); }
+
+/* Liste déroulante à cases à cocher */
+.multi { position: relative; }
+.multi > button, input[type="text"] {
+  width: 100%; min-height: 44px; padding: 8px 12px; font: inherit; color: var(--encre);
+  background: var(--papier); border: 1px solid var(--trait); border-radius: 8px; text-align: left;
+}
+.multi > button { display: flex; justify-content: space-between; align-items: center; gap: 8px; cursor: pointer; }
+.multi > button span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.multi > button::after { content: "▾"; color: var(--doux); }
+.multi > button:disabled { opacity: .5; cursor: default; }
+.multi .liste {
+  position: absolute; z-index: 20; top: calc(100% + 4px); left: 0; right: 0;
+  background: var(--papier); border: 1px solid var(--trait); border-radius: 8px;
+  box-shadow: 0 8px 24px rgb(0 0 0 / .18); padding: 8px; display: grid; gap: 6px;
+}
+.multi .liste input[type="text"] { min-height: 38px; }
+.multi .choix { max-height: 300px; overflow: auto; display: grid; }
+.multi .liste, .multi label span { min-width: 0; overflow-wrap: anywhere; }
+.multi label { display: flex; gap: 10px; align-items: flex-start; padding: 7px 6px; border-radius: 6px; cursor: pointer; }
+.multi label:hover { background: var(--accent-pale); }
+.multi label input { margin-top: 3px; width: 18px; height: 18px; flex: none; accent-color: var(--accent); }
+.multi label small { color: var(--doux); display: block; }
+.multi .tous { border-bottom: 1px solid var(--trait); font-weight: 700; }
+
+.cases { display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: center; }
+.cases label { display: flex; gap: 8px; align-items: center; cursor: pointer; }
+.cases input { width: 18px; height: 18px; accent-color: var(--accent); }
+
+.actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+button.principal, button.second {
+  min-height: 44px; padding: 8px 18px; font: 600 1rem var(--texte); border-radius: 8px; cursor: pointer;
+}
+button.principal { background: var(--accent); color: var(--papier); border: 1px solid var(--accent); }
+button.second { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+button:disabled { opacity: .5; cursor: default; }
+.etat { color: var(--doux); font-size: .95rem; }
+.etat.erreur { color: var(--alerte); }
+progress { width: 100%; height: 8px; accent-color: var(--accent); }
+
+/* Fiche */
+.fiche { background: var(--papier); border: 1px solid var(--trait); border-radius: 10px; padding: 24px; display: grid; gap: 18px; }
+.fiche header { display: grid; gap: 4px; border-bottom: 3px solid var(--encre); padding-bottom: 10px; }
+.fiche h1 { font-size: 2.4rem; }
+.defile { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+th, td { padding: 7px 8px; border-bottom: 1px solid var(--trait); text-align: left; vertical-align: top; }
+th { font-size: .75rem; text-transform: uppercase; letter-spacing: .07em; color: var(--doux); }
+td.n, th.n { text-align: right; }
+td.n { white-space: nowrap; }
+td.date { white-space: nowrap; }
+td small { color: var(--doux); }
+.salon-court { display: none; }
+tfoot td, tr.total td { font-weight: 700; border-top: 2px solid var(--encre); }
+.resume h2 { font-size: 1.4rem; margin-bottom: 6px; }
+.note { color: var(--doux); font-size: .85rem; margin: 0; }
+.vide { color: var(--doux); padding: 20px 0; }
+
+@media (max-width: 560px) {
+  .multi .liste { position: static; margin-top: 4px; box-shadow: none; }
+  .col-salon { display: none; }
+  .salon-court { display: block; }
+  .fiche { padding: 16px; }
+  .fiche h1 { font-size: 1.9rem; }
+  th, td { padding: 6px 5px; font-size: .9rem; }
+}
+@media print {
+  @page { margin: 14mm; }
+  :root { --fond: #fff; --papier: #fff; --encre: #000; --doux: #444; --trait: #bbb; color-scheme: light; }
+  body { padding: 0; background: #fff; font-size: 11pt; }
+  .ecran { display: none !important; }
+  .fiche { border: 0; padding: 0; }
+  .defile { overflow: visible; }
+  .col-salon { display: table-cell !important; }
+  .salon-court { display: none !important; }
+  tr { break-inside: avoid; }
+  .resume { break-inside: avoid; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <section class="panneau ecran" aria-labelledby="titre-form">
+    <div>
+      <h1 id="titre-form">Recherche d'un quilleur</h1>
+      <p class="sous" id="info-catalogue">Résultats EZ Lexer publiés sur Bowl4U.</p>
+    </div>
+
+    <div class="grille">
+      <div class="champ"><span class="etiquette">Saison</span><div class="multi" id="m-saisons"></div></div>
+      <div class="champ"><span class="etiquette">Pays</span><div class="multi" id="m-pays"></div></div>
+      <div class="champ"><span class="etiquette">Salon de quilles</span><div class="multi" id="m-salons"></div></div>
+    </div>
+
+    <div class="cases">
+      <span class="etiquette">Inclure</span>
+      <label><input type="checkbox" id="c-ligues" checked> Ligues</label>
+      <label><input type="checkbox" id="c-tournois" checked> Tournois</label>
+    </div>
+
+    <div class="grille">
+      <div class="champ">
+        <label class="etiquette" for="nom">Nom du joueur</label>
+        <input type="text" id="nom" placeholder="ex. Jean Tremblay" autocomplete="off">
+      </div>
+      <div class="champ"><span class="etiquette">Variantes du nom trouvées</span><div class="multi" id="m-variantes"></div></div>
+    </div>
+
+    <div class="actions">
+      <button class="principal" id="chercher">Rechercher</button>
+      <button class="second" id="arreter" hidden>Arrêter</button>
+      <button class="second" id="imprimer" disabled>Imprimer la fiche</button>
+    </div>
+    <div id="progression" hidden><progress id="barre" value="0" max="1"></progress></div>
+    <p class="etat" id="etat" aria-live="polite"></p>
+  </section>
+
+  <article class="fiche" id="fiche">
+    <p class="vide">Choisissez la saison et le salon, tapez le nom du joueur, puis appuyez sur « Rechercher ». La fiche s'affichera ici.</p>
+  </article>
+</div>
+
+<script>
+const LEXER = 'https://bowling.lexerbowling.com';
+const CAT = window.CATALOGUE || { salons: [], evenements: [], maj: null };
+const $ = id => document.getElementById(id);
+
+// ---------- Mémoire des choix (facultative) ----------
+const memo = {
+  lire(k, d) { try { const v = localStorage.getItem('fjl.' + k); return v ? JSON.parse(v) : d; } catch { return d; } },
+  ecrire(k, v) { try { localStorage.setItem('fjl.' + k, JSON.stringify(v)); } catch {} },
+};
+
+// ---------- Outils ----------
+const cle = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+const echappe = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const saisonDe = iso => { if (!iso) return null; const a = +iso.slice(0, 4), m = +iso.slice(5, 7); return m >= 8 ? a : a - 1; };
+const libSaison = a => `${a}-${a + 1}`;
+const MOIS = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+const dateFr = iso => iso ? `${+iso.slice(8, 10)} ${MOIS[+iso.slice(5, 7) - 1]} ${iso.slice(0, 4)}` : '—';
+const fmtMoy = x => x.toLocaleString('fr-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const NOMS_PAYS = { CA: 'Canada', FR: 'France', BE: 'Belgique', CH: 'Suisse', FI: 'Finlande', NL: 'Pays-Bas', IT: 'Italie', ES: 'Espagne', SE: 'Suède', NO: 'Norvège', DE: 'Allemagne', US: 'États-Unis', LU: 'Luxembourg', GB: 'Royaume-Uni', PT: 'Portugal', MC: 'Monaco', RE: 'La Réunion', MA: 'Maroc', DK: 'Danemark', EE: 'Estonie', UK: 'Royaume-Uni', CO: 'Colombie', GP: 'Guadeloupe', QA: 'Qatar', HK: 'Hong Kong', MY: 'Malaisie' };
+
+function levenshtein(a, b) {
+  if (a === b) return 0;
+  let prec = Array.from({ length: b.length + 1 }, (_, i) => i);
+  for (let i = 1; i <= a.length; i++) {
+    const cour = [i];
+    for (let j = 1; j <= b.length; j++)
+      cour[j] = Math.min(prec[j] + 1, cour[j - 1] + 1, prec[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    prec = cour;
+  }
+  return prec[b.length];
+}
+
+// Proximité d'un nom trouvé avec le nom cherché :
+// 0 identique, 1 mots inversés, 2 orthographe proche, 3 nom abrégé ou complété, null = rien à voir.
+function proximite(cherche, trouve) {
+  const a = cle(cherche), b = cle(trouve);
+  if (!a || !b) return null;
+  if (a === b) return 0;
+  const ta = a.split(' '), tb = b.split(' ');
+  const triA = [...ta].sort().join(' '), triB = [...tb].sort().join(' ');
+  if (triA === triB) return 1;
+  const tolerance = a.length >= 12 ? 2 : 1;
+  if (levenshtein(a, b) <= tolerance || levenshtein(triA, triB) <= tolerance) return 2;
+  // Tous les mots cherchés sont présents (« Jean Tremblay » → « Jean-Guy Tremblay », « Tremblay Jean (Bot) »)
+  if (ta.length > 1 && ta.every(m => tb.includes(m))) return 3;
+  // Même nom de famille, prénom abrégé ou en initiale (« J Tremblay », « Gab Roy » / « Gabriel Roy »)
+  const nomA = ta[ta.length - 1], nomB = tb[tb.length - 1];
+  if (ta.length > 1 && tb.length > 1 && (nomA === nomB || levenshtein(nomA, nomB) <= 1 && nomA.length > 5)) {
+    const pa = ta[0], pb = tb[0];
+    if (pa.startsWith(pb) || pb.startsWith(pa)) return 3;
+  }
+  return null;
+}
+const LIB_PROX = ['identique', 'mots inversés', 'orthographe proche', 'nom abrégé ou complété'];
+
+// ---------- Liste déroulante à cases ----------
+function multi(conteneur, { vide, unite, recherche = false, onChange = () => {} }) {
+  const el = $(conteneur);
+  el.innerHTML = `<button type="button" aria-expanded="false"><span></span></button>
+    <div class="liste" hidden>${recherche ? '<input type="text" placeholder="Filtrer…" aria-label="Filtrer la liste">' : ''}
+    <label class="tous"><input type="checkbox"> Tout cocher</label><div class="choix"></div></div>`;
+  const bouton = el.querySelector('button'), liste = el.querySelector('.liste');
+  const tous = el.querySelector('.tous input'), choix = el.querySelector('.choix'), filtre = el.querySelector('.liste input[type="text"]');
+  let options = [], coches = new Set();
+
+  const visibles = () => options.filter(o => !filtre || !filtre.value || cle(o.texte + ' ' + (o.detail || '')).includes(cle(filtre.value)));
+  function resume() {
+    const n = coches.size;
+    bouton.querySelector('span').textContent = !options.length ? vide : n === 0 ? `Aucun ${unite} choisi`
+      : n === options.length && n > 1 ? `Tous (${n})` : n === 1 ? options.find(o => coches.has(o.valeur)).texte : `${n} ${unite}s choisis`;
+    bouton.disabled = !options.length;
+    const v = visibles();
+    tous.checked = v.length > 0 && v.every(o => coches.has(o.valeur));
+    tous.indeterminate = !tous.checked && v.some(o => coches.has(o.valeur));
+  }
+  function dessine() {
+    choix.innerHTML = visibles().map(o => `<label><input type="checkbox" value="${echappe(o.valeur)}" ${coches.has(o.valeur) ? 'checked' : ''}>
+      <span>${echappe(o.texte)}${o.detail ? `<small>${echappe(o.detail)}</small>` : ''}</span></label>`).join('');
+    resume();
+  }
+  choix.addEventListener('change', e => { e.target.checked ? coches.add(e.target.value) : coches.delete(e.target.value); resume(); onChange(); });
+  tous.addEventListener('change', () => { for (const o of visibles()) tous.checked ? coches.add(o.valeur) : coches.delete(o.valeur); dessine(); onChange(); });
+  filtre?.addEventListener('input', dessine);
+  bouton.addEventListener('click', () => { liste.hidden = !liste.hidden; bouton.setAttribute('aria-expanded', !liste.hidden); if (!liste.hidden) filtre?.focus(); });
+  document.addEventListener('click', e => { if (!el.contains(e.target)) { liste.hidden = true; bouton.setAttribute('aria-expanded', 'false'); } });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') liste.hidden = true; });
+  dessine();
+  return {
+    definir(opts, choisis) {
+      options = opts;
+      const valides = new Set(opts.map(o => o.valeur));
+      coches = new Set([...(choisis ?? coches)].filter(v => valides.has(v)));
+      dessine();
+    },
+    valeurs: () => [...coches],
+  };
+}
+
+// ---------- Formulaire ----------
+// Un salon est désigné par « pays|nom|ville » : les choix mémorisés restent bons après une mise à jour du catalogue.
+const cleSalon = s => `${s.pays}|${s.nom}|${s.ville}`;
+const salonsParCle = new Map(CAT.salons.map(s => [cleSalon(s), s]));
+const evenements = CAT.evenements.map(([i, dossier, slug, nom, debut, fin, type]) => ({ salon: cleSalon(CAT.salons[i]), dossier, slug, nom, debut, fin, type, saison: saisonDe(debut || fin) }));
+
+const mSaisons = multi('m-saisons', { vide: 'Aucune saison', unite: 'saison', onChange: () => memo.ecrire('saisons', mSaisons.valeurs()) });
+const mPays = multi('m-pays', { vide: 'Aucun pays', unite: 'pays', onChange: majSalons });
+const mSalons = multi('m-salons', { vide: 'Aucun salon', unite: 'salon', recherche: true, onChange: () => memo.ecrire('salons', mSalons.valeurs()) });
+const mVariantes = multi('m-variantes', { vide: 'Lancez une recherche', unite: 'variante', recherche: true, onChange: dessineFiche });
+
+// Quelques événements portent des dates fantaisistes (1899, 1967…) : on ne garde que les saisons plausibles.
+const saisons = [...new Set(evenements.map(e => e.saison).filter(a => a >= 2005))].sort((a, b) => b - a);
+mSaisons.definir(saisons.map(a => ({ valeur: String(a), texte: libSaison(a), detail: `août ${a} à juillet ${a + 1}` })), memo.lire('saisons', saisons.slice(0, 1).map(String)));
+
+const pays = [...new Set(CAT.salons.map(s => s.pays))].sort((a, b) => (NOMS_PAYS[a] || a).localeCompare(NOMS_PAYS[b] || b, 'fr'));
+mPays.definir(pays.map(p => ({ valeur: p, texte: NOMS_PAYS[p] || p })), memo.lire('pays', pays.includes('CA') ? ['CA'] : pays));
+
+function majSalons() {
+  memo.ecrire('pays', mPays.valeurs());
+  const p = new Set(mPays.valeurs());
+  mSalons.definir(CAT.salons.filter(s => p.has(s.pays)).map(s => ({ valeur: cleSalon(s), texte: s.nom, detail: s.ville })), memo.lire('salons', []));
+}
+majSalons();
+$('nom').value = memo.lire('nom', '');
+$('info-catalogue').textContent = CAT.maj
+  ? `Catalogue Bowl4U du ${dateFr(CAT.maj)} : ${CAT.salons.length} salons, ${evenements.length} ligues et tournois.`
+  : 'Catalogue absent : lancez « node catalogue.mjs » pour le créer.';
+
+// ---------- Lecture des pages Lexer ----------
+const memoire = new Map(); // « salon/slug » → Promise<[{nom, parties, moy}]>
+
+function lireListe(html) {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  const res = [];
+  for (const t of doc.querySelectorAll('table')) {
+    if (t.querySelector('table')) continue;
+    const ent = [...t.querySelectorAll('th')].map(th => th.textContent.trim().toLowerCase());
+    const iNom = ent.indexOf('nom'), iP = ent.findIndex(e => e === 'pties' || e === 'parties'), iM = ent.indexOf('moy.');
+    if (iNom < 0 || iP < 0 || iM < 0) continue;
+    for (const tr of t.querySelectorAll('tr')) {
+      const td = tr.querySelectorAll('td');
+      if (td.length < ent.length) continue;
+      const nom = td[iNom].textContent.replace(/\s+/g, ' ').trim();
+      const parties = parseInt(td[iP].textContent, 10) || 0;
+      const moy = parseFloat(td[iM].textContent.replace(',', '.')) || 0;
+      if (nom && parties > 0) res.push({ nom, parties, moy });
+    }
+  }
+  return res;
+}
+
+function quilleurs(ev) {
+  const k = `${ev.dossier}/${ev.slug}`;
+  if (!memoire.has(k)) memoire.set(k, fetch(`${LEXER}/${ev.dossier}/${ev.slug}/playerlist.htm`)
+    .then(r => r.ok ? r.text() : Promise.reject(new Error('HTTP ' + r.status)))
+    .then(lireListe)
+    .catch(e => { memoire.delete(k); throw e; }));
+  return memoire.get(k);
+}
+
+// ---------- Recherche ----------
+let trouves = [];   // { ev, nom, parties, moy, prox }
+let nomCherche = '';
+let arret = false;
+
+$('chercher').addEventListener('click', chercher);
+$('nom').addEventListener('keydown', e => { if (e.key === 'Enter') chercher(); });
+$('arreter').addEventListener('click', () => { arret = true; });
+$('imprimer').addEventListener('click', () => window.print());
+
+function etat(msg, erreur = false) { $('etat').textContent = msg; $('etat').classList.toggle('erreur', erreur); }
+
+async function chercher() {
+  const nom = $('nom').value.trim();
+  const sa = new Set(mSaisons.valeurs().map(Number)), sl = new Set(mSalons.valeurs());
+  const types = new Set([$('c-ligues').checked && 'L', $('c-tournois').checked && 'T'].filter(Boolean));
+  if (!nom) return etat('Tapez le nom du joueur.', true);
+  if (!sa.size) return etat('Choisissez au moins une saison.', true);
+  if (!sl.size) return etat('Choisissez au moins un salon de quilles.', true);
+  if (!types.size) return etat('Cochez Ligues, Tournois ou les deux.', true);
+  memo.ecrire('nom', nom);
+
+  const liste = evenements.filter(e => sa.has(e.saison) && sl.has(e.salon) && types.has(e.type));
+  if (!liste.length) return etat('Aucune ligue ni aucun tournoi publié pour ce choix de saisons et de salons.', true);
+
+  arret = false; nomCherche = nom; trouves = [];
+  $('chercher').disabled = true; $('arreter').hidden = false; $('progression').hidden = false;
+  $('barre').max = liste.length; $('barre').value = 0;
+  let faits = 0, echecs = 0;
+  const file = [...liste];
+  async function travailleur() {
+    while (file.length && !arret) {
+      const ev = file.shift();
+      try {
+        for (const q of await quilleurs(ev)) {
+          const prox = proximite(nom, q.nom);
+          if (prox !== null) trouves.push({ ev, ...q, prox });
+        }
+      } catch { echecs++; }
+      $('barre').value = ++faits;
+      etat(`Lecture des résultats : ${faits} sur ${liste.length}…`);
+    }
+  }
+  await Promise.all(Array.from({ length: 6 }, travailleur));
+  $('chercher').disabled = false; $('arreter').hidden = true; $('progression').hidden = true;
+
+  // Variantes : chaque orthographe distincte du nom. Seules les identiques (accents, majuscules
+  // ou ordre des mots près) sont cochées d'office ; « Jeanne » pour « Jean » reste au choix.
+  const variantes = new Map();
+  for (const t of trouves) {
+    const v = variantes.get(t.nom) || { nom: t.nom, prox: t.prox, n: 0 };
+    v.n++; variantes.set(t.nom, v);
+  }
+  const vs = [...variantes.values()].sort((a, b) => a.prox - b.prox || b.n - a.n || a.nom.localeCompare(b.nom, 'fr'));
+  mVariantes.definir(vs.map(v => ({ valeur: v.nom, texte: v.nom, detail: `${LIB_PROX[v.prox]} · ${v.n} ${v.n > 1 ? 'inscriptions' : 'inscription'}` })),
+    vs.filter(v => v.prox <= 1).map(v => v.nom));
+
+  const bilan = `${faits} ligues et tournois lus${echecs ? `, ${echecs} illisibles` : ''}${arret ? ' (recherche arrêtée)' : ''}.`;
+  etat(vs.length ? `${bilan} ${vs.length} ${vs.length > 1 ? 'variantes trouvées' : 'variante trouvée'} : vérifiez la liste « Variantes du nom ».` : `${bilan} Aucun joueur de ce nom.`, !vs.length);
+  dessineFiche();
+}
+
+// ---------- Fiche ----------
+function dessineFiche() {
+  const choisies = new Set(mVariantes.valeurs());
+  const lignes = trouves.filter(t => choisies.has(t.nom)).map(t => ({
+    date: t.ev.debut || t.ev.fin || '', fin: t.ev.fin, salon: salonsParCle.get(t.ev.salon).nom,
+    ligue: t.ev.nom, type: t.ev.type, nom: t.nom, parties: t.parties, moy: t.moy,
+  })).sort((a, b) => a.date.localeCompare(b.date) || a.salon.localeCompare(b.salon, 'fr') || a.ligue.localeCompare(b.ligue, 'fr') || a.nom.localeCompare(b.nom, 'fr'));
+  $('imprimer').disabled = !lignes.length;
+  if (!trouves.length) return;
+  if (!lignes.length) { $('fiche').innerHTML = '<p class="vide">Cochez au moins une variante du nom pour afficher la fiche.</p>'; return; }
+
+  const plusieursNoms = choisies.size > 1;
+  const saisonsTxt = mSaisons.valeurs().map(Number).sort().map(libSaison).join(', ');
+  const total = groupe => {
+    const p = groupe.reduce((s, l) => s + l.parties, 0);
+    return {
+      salons: new Set(groupe.map(l => l.salon)).size,
+      ligues: new Set(groupe.map(l => l.salon + '|' + l.ligue)).size,
+      parties: p,
+      moy: p ? groupe.reduce((s, l) => s + l.moy * l.parties, 0) / p : 0,
+    };
+  };
+  const parNom = [...choisies].filter(n => lignes.some(l => l.nom === n)).sort((a, b) => a.localeCompare(b, 'fr'))
+    .map(n => ({ nom: n, ...total(lignes.filter(l => l.nom === n)) }));
+  const tout = total(lignes);
+
+  $('fiche').innerHTML = `
+    <header>
+      <h1>${echappe(nomCherche)}</h1>
+      <p class="sous">Saison${mSaisons.valeurs().length > 1 ? 's' : ''} ${echappe(saisonsTxt)} · imprimé le ${dateFr(new Date().toISOString().slice(0, 10))}</p>
+    </header>
+    <div class="defile"><table>
+      <thead><tr><th>Date</th><th class="col-salon">Salon de quilles</th><th>Ligue / tournoi</th>${plusieursNoms ? '<th>Nom inscrit</th>' : ''}<th class="n">Parties</th><th class="n">Moyenne</th></tr></thead>
+      <tbody>${lignes.map(l => `<tr>
+        <td class="date">${dateFr(l.date)}</td><td class="col-salon">${echappe(l.salon)}</td>
+        <td>${echappe(l.ligue)}${l.type === 'T' ? ' <small>(tournoi)</small>' : ''}<small class="salon-court">${echappe(l.salon)}</small></td>
+        ${plusieursNoms ? `<td>${echappe(l.nom)}</td>` : ''}
+        <td class="n">${l.parties}</td><td class="n">${fmtMoy(l.moy)}</td></tr>`).join('')}</tbody>
+    </table></div>
+    <section class="resume">
+      <h2>Résumé</h2>
+      <div class="defile"><table>
+        <thead><tr><th>Nom tel qu'inscrit</th><th class="n">Salons</th><th class="n">Ligues</th><th class="n">Parties</th><th class="n">Moyenne cumulative</th></tr></thead>
+        <tbody>${parNom.map(v => `<tr><td>${echappe(v.nom)}</td><td class="n">${v.salons}</td><td class="n">${v.ligues}</td><td class="n">${v.parties}</td><td class="n">${fmtMoy(v.moy)}</td></tr>`).join('')}
+        ${parNom.length > 1 ? `<tr class="total"><td>Toutes les variantes</td><td class="n">${tout.salons}</td><td class="n">${tout.ligues}</td><td class="n">${tout.parties}</td><td class="n">${fmtMoy(tout.moy)}</td></tr>` : ''}</tbody>
+      </table></div>
+      <p class="note">Moyenne cumulative = total des quilles abattues ÷ total des parties (chaque moyenne pondérée par son nombre de parties). Date = début de la ligue ou du tournoi. Source : bowling.lexerbowling.com.</p>
+    </section>`;
+}
+</script>
+</body>
+</html>
